@@ -21,3 +21,9 @@ for filepath in $DIR/web/*.html.j2; do
 	sed -i "s^{{FFH_LOGO}}^$(cat $DIR/out/b64/logo-ff.png.b64)^" $DIR/out/$sless
 	sed -i "s^{{POWER_SYMBOL}}^$(cat $DIR/out/b64/power.png.b64)^" $DIR/out/$sless
 done
+
+
+cp $DIR/ffhweb.h.j2 $DIR/ffhweb.h
+
+sed -i $'/{{INDEX}}/{r out/index.html\nd}' $DIR/ffhweb.h
+sed -i $'/{{EXTENDED}}/{r out/extended.html\nd}' $DIR/ffhweb.h

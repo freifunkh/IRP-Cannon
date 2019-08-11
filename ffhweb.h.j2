@@ -1,0 +1,117 @@
+#include "main.h"
+#include <ESP8266WebServer.h>
+
+const char* ssid = "hannover.freifunk.net";
+const int port = 80;
+
+
+void handleBgone(void);
+void handleLEDon(void);
+void handleLEDoff(void);
+void handleRoot(void);
+void handleStatus(void);
+void handleStatuschange(void);
+void webserver_setup(void);
+
+ESP8266WebServer server(port);
+
+const char MAIN_page[] PROGMEM = R"=====(
+{{INDEX}}
+)=====";
+
+const char EXT_page[] PROGMEM = R"=====(
+{{EXTENDED}}
+)=====";
+
+void handleBgone() {
+ Serial.println("TV-B-Gone page");
+ server.send(200, "text/html", "TV-B-Gone");
+ sendAllCodes();
+}
+
+void handleExtended() {
+ Serial.println("Extended page");
+ String s = EXT_page;
+ s.replace("$UPTIME", String(get_uptime()));
+ s.replace("$LASTCHANGE", String(get_statuschange()));
+ s.replace("$SSID", String(ssid));
+ s.replace("$REGION", get_region_code());
+ s.replace("$CODECOUNT", String(get_code_count()));
+ server.send(200, "text/html", s);
+}
+
+void handleLEDon() {
+ Serial.println("LED on page");
+ digitalWrite(IRLED,HIGH);
+ server.send(200, "text/html", "ON");
+}
+
+void handleLEDoff() {
+ Serial.println("LED off page");
+ digitalWrite(IRLED,LOW); //off
+ server.send(200, "text/html", "OFF");
+}
+
+void handleRoot() {
+ Serial.println("You called root page");
+ String s = MAIN_page;
+ server.send(200, "text/html", s);
+}
+
+void handleStatus() {
+ Serial.println("Called the status page");
+ server.send(200, "text/html", String(get_status()));
+}
+
+void handleStatuschange() {
+ String lc = String(get_statuschange());
+ Serial.println("Called the statuschange page, got " + lc);
+ server.send(200, "text/html", lc);
+}
+
+void printDetailsSerial() {
+  Serial.println("");
+  Serial.print("Connected to ");
+  Serial.println(ssid);
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
+String status_to_String(int statuscode) {
+  switch(statuscode){
+    case -1:
+      return "uninitialized";
+    default:
+      return "unknown statuscode";
+  }
+}
+
+void webserver_setup(void){
+  delay(5000);
+  yield();
+  Serial.print("trying to connect to wifinetwork ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, NULL);
+  Serial.println("");
+
+  // Wait for connection
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+    yield();
+  }
+
+  printDetailsSerial();
+
+  server.on("/", handleRoot);
+  server.on("/ext", handleExtended);
+  server.on("/gone", handleBgone);
+  server.on("/last_statuschange", handleStatuschange);
+  server.on("/led_off", handleLEDoff);
+  server.on("/led_on", handleLEDon);
+  server.on("/status", handleStatus);
+
+  server.begin();
+  Serial.println("HTTP server started");
+}
