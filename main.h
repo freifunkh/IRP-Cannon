@@ -6,6 +6,8 @@ By aiyion (freifunk@aiyionpri.me)
 #ifndef IRP_MAIN_H
 #define IRP_MAIN_H
 
+
+unsigned long get_uptime(void);
 void load_EU(void);
 
 // The TV-B-Gone for Arduino can use either the EU (European Union) or the NA (North America) database of POWER CODES

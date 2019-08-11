@@ -52,6 +52,8 @@ Distributed under Creative Commons 2.5 -- Attribution & Share Alike
 #include <IRremoteESP8266.h>
 #include <IRsend.h>
 
+unsigned long previousmillis = millis();
+
 void xmitCodeElement(uint16_t ontime, uint16_t offtime, uint8_t PWM_code );
 void delay_ten_us(uint16_t us);
 uint8_t read_bits(uint8_t count);
@@ -316,6 +318,10 @@ void sendAllCodes()
 
 void loop() 
 {
+  //have an uptime clock updated every five seconds
+  if(millis()>previousmillis+5*1000){
+    previousmillis = millis();
+  }
   //Super "ghetto" (but decent enough for this application) button debouncing:
   //-if the user pushes the Trigger button, then wait a while to let the button stop bouncing, then start transmission of all POWER codes
   if (digitalRead(TRIGGER) == BUTTON_PRESSED) 
@@ -328,6 +334,10 @@ void loop()
     sendAllCodes();
   }
   yield();
+}
+
+unsigned long get_uptime(void) {
+  return previousmillis;
 }
 
 void load_EU()
