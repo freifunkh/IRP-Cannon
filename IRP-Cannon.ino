@@ -48,9 +48,12 @@ Distributed under Creative Commons 2.5 -- Attribution & Share Alike
 
 */
 
+#include "ffhweb.h"
 #include "WORLD_IR_CODES.h"
+#include <ESP8266WiFi.h>
 #include <IRremoteESP8266.h>
 #include <IRsend.h>
+#include <WiFiClient.h>
 
 unsigned long previousmillis = millis();
 
@@ -186,6 +189,8 @@ void setup()
 {
   Serial.begin(115200);
 
+  webserver_setup();
+
   irsend.begin();
 
   pinMode(TRIGGER, INPUT_PULLUP);
@@ -289,6 +294,8 @@ void sendAllCodes()
     irsend.sendRaw(rawData, (numpairs*2) , freq);
     Serial.print("\n");
     yield();
+    server.handleClient();
+
     //Flush remaining bits, so that next code starts
     //with a fresh set of 8 bits.
     bitsleft_r=0;
@@ -324,6 +331,9 @@ void sendAllCodes()
 
 void loop() 
 {
+  // serve the webrequests
+  server.handleClient();
+
   //have an uptime clock updated every five seconds
   if(millis()>previousmillis+5*1000){
     previousmillis = millis();
