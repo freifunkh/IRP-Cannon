@@ -38,9 +38,7 @@ CIRCUIT:
 -NB: SEE "main.h" TO VERIFY DEFINED PINS TO USE
 The hardware for this project uses a wemos D1 mini ESP8266-based board:
  Connect an IR LED to pin 14 / D5 (IRLED).
- Uses the built-in LED via pin 2.
  Connect a push-button between pin 12 / D6 (TRIGGER) and ground.
- Pin 5 / D1 (REGIONSWITCH) must be left floating for North America, or wire it to ground to have it output European codes.
 
 More about the wiring is written in the readme.
 ------------------------------------------------------------
@@ -55,9 +53,7 @@ Distributed under Creative Commons 2.5 -- Attribution & Share Alike
 #include <IRsend.h>
 
 void xmitCodeElement(uint16_t ontime, uint16_t offtime, uint8_t PWM_code );
-void quickflashLEDx( uint8_t x );
 void delay_ten_us(uint16_t us);
-void quickflashLED( void );
 uint8_t read_bits(uint8_t count);
 uint16_t rawData[300];
 
@@ -179,7 +175,7 @@ The C compiler creates code that will transfer all constants into RAM when
 
 uint16_t ontime, offtime;
 uint8_t i,num_codes;
-uint8_t region;
+uint8_t region=EU;
 
 void setup()   
 {
@@ -187,20 +183,15 @@ void setup()
 
   irsend.begin();
 
-  digitalWrite(LED, HIGH);
-  pinMode(LED, OUTPUT);
-  pinMode(REGIONSWITCH, INPUT_PULLUP);
   pinMode(TRIGGER, INPUT_PULLUP);
 
   delay_ten_us(5000); //50ms (5000x10 us) delay: let everything settle for a bit
 
   // determine region
-  if (digitalRead(REGIONSWITCH)) {
-    region = NA;
+  if (NA == region) {
     DEBUGP(putstring_nl("NA"));
   }
   else {
-    region = EU;
     DEBUGP(putstring_nl("EU"));
   }
 
@@ -211,27 +202,13 @@ void setup()
   DEBUGP(putstring("\n\rEU Codesize: ");
   putnum_ud(num_EUcodes);
   );
-
-  // Tell the user what region we're in  - 3 flashes is NA, 6 is EU
-  if (region == NA)
-    quickflashLEDx(3);
-  else //region == EU
-    quickflashLEDx(6);
 }
 
 void sendAllCodes() 
 {
   bool endingEarly = false; //will be set to true if the user presses the button during code-sending 
-      
-  // determine region from REGIONSWITCH: 1 = NA, 0 = EU (defined in main.h)
-  if (digitalRead(REGIONSWITCH)) {
-    region = NA;
-    num_codes = num_NAcodes;
-  }
-  else {
-    region = EU;
-    num_codes = num_EUcodes;
-  }
+
+  load_EU();
 
   // for every POWER code in our collection
   for (i=0 ; i<num_codes; i++) 
@@ -309,9 +286,6 @@ void sendAllCodes()
     //with a fresh set of 8 bits.
     bitsleft_r=0;
 
-    // visible indication that a code has been output.
-    quickflashLED();
-    
     // delay 205 milliseconds before transmitting next POWER code
     delay_ten_us(20500);
 
@@ -323,7 +297,6 @@ void sendAllCodes()
       }
       endingEarly = true;
       delay_ten_us(50000); //500ms delay 
-      quickflashLEDx(4);
       //pause for ~1.3 sec to give the user time to release the button so that the code sequence won't immediately start again.
       delay_ten_us(MAX_WAIT_TIME); // wait 655.350ms
       delay_ten_us(MAX_WAIT_TIME); // wait 655.350ms
@@ -334,10 +307,9 @@ void sendAllCodes()
 
   if (endingEarly==false)
   {
-    //pause for ~1.3 sec, then flash the visible LED 8 times to indicate that we're done
+    //pause for ~1.3 sec
     delay_ten_us(MAX_WAIT_TIME); // wait 655.350ms
     delay_ten_us(MAX_WAIT_TIME); // wait 655.350ms
-    quickflashLEDx(8);
   }
 
 } //end of sendAllCodes
@@ -358,8 +330,14 @@ void loop()
   yield();
 }
 
+void load_EU()
+{
+  region = EU;
+  num_codes = num_EUcodes;
+}
 
-/****************************** LED AND DELAY FUNCTIONS ********/
+
+/****************************** DELAY FUNCTIONS ********/
 
 
 // This function delays the specified number of 10 microseconds
@@ -382,23 +360,3 @@ void delay_ten_us(uint16_t us) {
     us--;
   }
 }
-
-
-// This function quickly pulses the visible LED (connected to PB0, pin 5)
-// This will indicate to the user that a code is being transmitted
-void quickflashLED( void ) {
-  digitalWrite(LED, LOW);
-  delay_ten_us(3000);   // 30 ms ON-time delay
-  digitalWrite(LED, HIGH);
-}
-
-// This function just flashes the visible LED a couple times, used to
-// tell the user what region is selected
-void quickflashLEDx( uint8_t x ) {
-  quickflashLED();
-  while(--x) {
-    delay_ten_us(25000);     // 250 ms OFF-time delay between flashes
-    quickflashLED();
-  }
-}
-

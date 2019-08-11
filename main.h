@@ -6,6 +6,8 @@ By aiyion (freifunk@aiyionpri.me)
 #ifndef IRP_MAIN_H
 #define IRP_MAIN_H
 
+void load_EU(void);
+
 // The TV-B-Gone for Arduino can use either the EU (European Union) or the NA (North America) database of POWER CODES
 // EU is for Europe, Middle East, Australia, New Zealand, and some countries in Africa and South America
 // NA is for North America, Asia, and the rest of the world not covered by EU
@@ -15,10 +17,8 @@ By aiyion (freifunk@aiyionpri.me)
 #define EU 0 //set by a LOW on REGIONSWITCH pin
 
 // What pins do what
-#define LED 2 //LED indicator pin (built-in LED)
 #define IRLED 14        //the IR sender LED / D5 on wemos D1 mini
 #define TRIGGER 12       //the button pin / D6 on wemos D1 mini
-#define REGIONSWITCH 5  //HIGH (1) = NA, LOW (0) = EU; Pin 5 / D1 (REGIONSWITCH) is HIGH (via in input pullup resistor) for North America, or you (the user) must wire it to ground to set the codes for Europe.
 
 // Lets us calculate the size of the NA/EU databases
 #define NUM_ELEM(x) (sizeof (x) / sizeof (*(x)));
