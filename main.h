@@ -7,6 +7,7 @@ By aiyion (freifunk@aiyionpri.me)
 #define IRP_MAIN_H
 
 
+int get_code_count(void);
 unsigned long get_uptime(void);
 void load_EU(void);
 

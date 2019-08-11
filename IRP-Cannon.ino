@@ -336,6 +336,10 @@ void loop()
   yield();
 }
 
+int get_code_count(void) {
+  return num_codes;
+}
+
 unsigned long get_uptime(void) {
   return previousmillis;
 }
