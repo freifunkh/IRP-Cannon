@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <script language='javascript' type='text/javascript'>
+  var timeBegan = null
+    , started = null;
+  statuscode = -1;
+  statuschange = $LASTCHANGE;
+
+function start() {
+    if (timeBegan === null) {
+        timeBegan = new Date()-$UPTIME;
+    }
+
+    started = setInterval(clockRunning, 10);
+}
+
+function clockRunning(){
+    currentTime = new Date()
+        , timeElapsed = new Date(currentTime - timeBegan)
+        , hour = timeElapsed.getUTCHours()
+        , min = timeElapsed.getUTCMinutes()
+        , sec = timeElapsed.getUTCSeconds()
+        , ms = timeElapsed.getUTCMilliseconds();
+
+    document.getElementById('display-area').innerHTML =
+        (hour > 9 ? hour : '0' + hour) + ':' +
+        (min > 9 ? min : '0' + min) + ':' +
+        (sec > 9 ? sec : '0' + sec) + '.' +
+        (ms > 99 ? ms : ms > 9 ? '0' + ms : '00' + ms);
+};
+
+setInterval(function() {
+  getData();
+}, 2000); //2000ms update rate
+
+function statuscode_to_string(code){
+  switch(parseInt(code)) {
+    case -1:
+      return 'uninitialized';
+    case 0:
+      return 'idle';
+    case 1:
+      return 'lighting';
+    case 2:
+      return 'be gone';
+    default:
+      return 'unknown statuscode';
+  }
+}
+
+
+function getStatusChangeData() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        console.log('statuschange: ' + statuschange);
+        console.log('responseText: ' + this.responseText);
+        statuschange = this.responseText;
+    }
+  };
+  xhttp.open("GET", "last_statuschange", false);
+  xhttp.send();
+}
+
+function move() {
+  var elem = document.getElementById('myBar');
+  console.log(statuschange/10);
+  var width = statuschange/10;
+  var id = setInterval(frame, 10);
+  var duration=28495;
+
+  function frame() {
+    if (width >= duration/10 || statuscode != 2) {
+      clearInterval(id);
+      elem.style.width = '100%';
+    } else {
+      width++;
+      rounded = Math.round(width);
+      if (rounded % 10 == 0){
+        console.log(width+': ('+rounded+')');
+        console.log(width+'/(' + duration + '/1000: '+ width/(duration/1000)+')');
+      }
+      elem.style.width = width/(duration/1000) + '%';
+    }
+  }
+}
+
+function getData() {
+  console.log('entering getData');
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log('status is 200');
+      if (statuscode != this.responseText){
+        console.log('statuscode ('+statuscode+')differs from response ('+this.responseText+') -> status changed');
+        statuscode = this.responseText;
+        document.getElementById('status').innerHTML =
+        statuscode_to_string(statuscode);
+        if (2==statuscode) {
+          console.log('statuscode ('+statuscode+') is 2. getting changedata and kick move');
+          getStatusChangeData();
+          move();
+        }
+      }
+    }
+  };
+  xhttp.open("GET", "status", true);
+  xhttp.send();
+  console.log('exiting getData');
+}
+  </script>
+  <link href="data:image/x-icon;base64,{{FAVICON_DATA}}" rel="icon" type="image/x-icon" />
+
+<style>
+
+html, body {
+  height: 100%;
+  margin: 0px;
+}
+
+#myProgress {
+  width: 100%;
+  background-color: lightgrey;
+}
+
+#myBar {
+  width: 100%;
+  height: 10px;
+  background-color: #009ee0;
+}
+
+#display-area {
+  font-size: 20pt;
+}
+
+.wrapper {
+  height: 100%;
+  min-height: 100%;
+  position: relative;
+  background-color: #ffffff;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  text-align: center;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.title {
+  color: grey;
+  font-size: 18px;
+}
+
+button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}
+
+a {
+  text-decoration: none;
+  font-size: 22px;
+  color: black;
+}
+
+button:hover, a:hover {
+  opacity: 0.7;
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="card">
+    <img src="data:image/png;base64,{{FFH_LOGO}}" alt="ffh-logo" style="width:90%; margin-top:20px;">
+    <h1>Debug!</h1>
+    <p class="title">Drücke auf das aus-Symbol um deinen Fernseher in der Nähe auszuschalten.</p>
+    <p>Region: <span>$REGION</span></p>
+    <p>verschiedene Signale: <span>$CODECOUNT</span></p>
+    <p>aktuelle SSID: <span>$SSID</span></p>
+    <p>current status: <span id='status'>uninitialized</span></p>
+    <div id='myProgress'>
+      <div id='myBar'></div>
+    </div>
+    <div>
+      <output id="display-area">00:00:00.000</output>
+    </div>
+    <script language='javascript' type='text/javascript'>start();</script>
+    <p>Freifunk Hannover</p>
+    <a href="gone" target="hidden_iframe"><img src="data:image/png;base64,{{POWER_SYMBOL}}" alt="power-off" width="128" height="128"></a>
+    <p><a href="https://hannover.freifunk.net/wiki/Freifunk/Tv-b-gone"><button>Über das Projekt</button></a></p>
+  </div>
+</div>
+<iframe src="status" name="hidden_iframe" style="display: none;"></iframe> 
+<hr>
+
+</body>
+</html>
