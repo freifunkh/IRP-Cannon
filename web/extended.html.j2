@@ -60,7 +60,7 @@ function getStatusChangeData() {
         statuschange = this.responseText;
     }
   };
-  xhttp.open("GET", "last_statuschange", false);
+  xhttp.open('GET', 'last_statuschange', false);
   xhttp.send();
 }
 
@@ -106,12 +106,12 @@ function getData() {
       }
     }
   };
-  xhttp.open("GET", "status", true);
+  xhttp.open('GET', 'status', true);
   xhttp.send();
   console.log('exiting getData');
 }
   </script>
-  <link href="data:image/x-icon;base64,{{FAVICON_DATA}}" rel="icon" type="image/x-icon" />
+  <link href='data:image/x-icon;base64,{{FAVICON_DATA}}' rel='icon' type='image/x-icon' />
 
 <style>
 
