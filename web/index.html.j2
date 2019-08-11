@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link href="data:image/x-icon;base64,{{FAVICON_DATA}}" rel="icon" type="image/x-icon" />
+<style>
+
+html, body {
+  height: 100%;
+  margin: 0px;
+}
+
+.wrapper {
+  height: 100%;
+  min-height: 100%;
+  position: relative;
+  background-color: #ffffff;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  text-align: center;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.title {
+  color: grey;
+  font-size: 18px;
+}
+
+
+button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}
+
+a {
+  text-decoration: none;
+  font-size: 22px;
+  color: black;
+}
+
+button:hover, a:hover {
+  opacity: 0.7;
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="card">
+    <img src="data:image/png;base64,{{FFH_LOGO}}" alt="ffh-logo" style="width:90%; margin-top:20px;">
+    <h1>TV be gone!</h1>
+    <p class="title">Drücke auf das aus-Symbol um deinen Fernseher in der Nähe auszuschalten.</p>
+    <p>Freifunk Hannover</p>
+    <a href="gone" target="hidden_iframe"><img src="data:image/png;base64,{{POWER_SYMBOL}}" alt="power-off" width="128" height="128"></a>
+    <p><a href="https://hannover.freifunk.net/wiki/Freifunk/Tv-b-gone"><button>Über das Projekt</button></a></p>
+  </div>
+</div>
+<iframe src="status" name="hidden_iframe" style="display: none;"></iframe>
+<hr>
+
+</body>
+</html>
