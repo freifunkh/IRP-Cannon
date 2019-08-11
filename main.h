@@ -14,6 +14,7 @@ int get_status(void);
 unsigned long get_statuschange(void);
 unsigned long get_uptime(void);
 void load_EU(void);
+void sendAllCodes(void);
 void update_status(int new_status);
 
 // The TV-B-Gone for Arduino can use either the EU (European Union) or the NA (North America) database of POWER CODES
