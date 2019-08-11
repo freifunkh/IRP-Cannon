@@ -1,7 +1,10 @@
 /*
-Last Updated: 30 Mar. 2018
-By Anton Grimpelhuber (anton.grimpelhuber@gmail.com)
+Last Updated: 11 Aug. 2019
+By aiyion (freifunk@aiyionpri.me)
 */
+
+#ifndef IRP_MAIN_H
+#define IRP_MAIN_H
 
 // The TV-B-Gone for Arduino can use either the EU (European Union) or the NA (North America) database of POWER CODES
 // EU is for Europe, Middle East, Australia, New Zealand, and some countries in Africa and South America
@@ -47,3 +50,5 @@ struct IrCode {
   uint16_t const *times;
   uint8_t const *codes;
 };
+
+#endif //IRP_MAIN_H
