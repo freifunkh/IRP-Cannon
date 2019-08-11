@@ -10,8 +10,11 @@ By aiyion (freifunk@aiyionpri.me)
 int get_code_count(void);
 int get_region(void);
 String get_region_code(void);
+int get_status(void);
+unsigned long get_statuschange(void);
 unsigned long get_uptime(void);
 void load_EU(void);
+void update_status(int new_status);
 
 // The TV-B-Gone for Arduino can use either the EU (European Union) or the NA (North America) database of POWER CODES
 // EU is for Europe, Middle East, Australia, New Zealand, and some countries in Africa and South America

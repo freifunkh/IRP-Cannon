@@ -54,6 +54,9 @@ Distributed under Creative Commons 2.5 -- Attribution & Share Alike
 
 unsigned long previousmillis = millis();
 
+int current_status = -1;
+unsigned long last_status_change = previousmillis;
+
 void xmitCodeElement(uint16_t ontime, uint16_t offtime, uint8_t PWM_code );
 void delay_ten_us(uint16_t us);
 uint8_t read_bits(uint8_t count);
@@ -205,6 +208,7 @@ void setup()
   putnum_ud(num_EUcodes);
   );
   load_EU();
+  update_status(0);
 }
 
 void sendAllCodes() 
@@ -314,6 +318,7 @@ void sendAllCodes()
     delay_ten_us(MAX_WAIT_TIME); // wait 655.350ms
     delay_ten_us(MAX_WAIT_TIME); // wait 655.350ms
   }
+  update_status(0);
 
 } //end of sendAllCodes
 
@@ -349,6 +354,14 @@ String get_region_code(void) {
   return get_region()==0 ? "EU" : "NA";
 }
 
+int get_status(void) {
+  return current_status;
+}
+
+unsigned long get_statuschange(void) {
+  return millis()-last_status_change;
+}
+
 unsigned long get_uptime(void) {
   return previousmillis;
 }
@@ -357,6 +370,11 @@ void load_EU()
 {
   region = EU;
   num_codes = num_EUcodes;
+}
+
+void update_status(int new_status) {
+  current_status = new_status;
+  last_status_change = millis();
 }
 
 
