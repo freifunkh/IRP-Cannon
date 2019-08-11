@@ -340,6 +340,14 @@ int get_code_count(void) {
   return num_codes;
 }
 
+int get_region(void) {
+  return region;
+}
+
+String get_region_code(void) {
+  return get_region()==0 ? "EU" : "NA";
+}
+
 unsigned long get_uptime(void) {
   return previousmillis;
 }

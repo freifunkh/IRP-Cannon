@@ -8,6 +8,8 @@ By aiyion (freifunk@aiyionpri.me)
 
 
 int get_code_count(void);
+int get_region(void);
+String get_region_code(void);
 unsigned long get_uptime(void);
 void load_EU(void);
 
