@@ -13,12 +13,12 @@ void load_EU(void);
 // NA is for North America, Asia, and the rest of the world not covered by EU
 
 // Two regions!
-#define NA 1 //set by a HIGH on REGIONSWITCH pin
-#define EU 0 //set by a LOW on REGIONSWITCH pin
+#define NA 1
+#define EU 0
 
 // What pins do what
-#define IRLED 14        //the IR sender LED / D5 on wemos D1 mini
-#define TRIGGER 12       //the button pin / D6 on wemos D1 mini
+#define IRLED 0        //the IR sender LED
+#define TRIGGER 2       //the button pin
 
 // Lets us calculate the size of the NA/EU databases
 #define NUM_ELEM(x) (sizeof (x) / sizeof (*(x)));
