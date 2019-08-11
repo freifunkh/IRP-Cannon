@@ -60,6 +60,8 @@ unsigned long previousmillis = millis();
 int current_status = -1;
 unsigned long last_status_change = previousmillis;
 
+bool runningSequence = false;
+
 void xmitCodeElement(uint16_t ontime, uint16_t offtime, uint8_t PWM_code );
 void delay_ten_us(uint16_t us);
 uint8_t read_bits(uint8_t count);
@@ -218,6 +220,10 @@ void setup()
 
 void sendAllCodes() 
 {
+  runningSequence=!runningSequence;
+  if(runningSequence){
+    update_status(2);
+  }
   bool endingEarly = false; //will be set to true if the user presses the button during code-sending 
 
   load_EU();
@@ -304,7 +310,7 @@ void sendAllCodes()
     delay_ten_us(20500);
 
     // if user is pushing (holding down) TRIGGER button, stop transmission early 
-    if (digitalRead(TRIGGER) == BUTTON_PRESSED) 
+    if (digitalRead(TRIGGER) == BUTTON_PRESSED || runningSequence == false)
     {
       while (digitalRead(TRIGGER) == BUTTON_PRESSED){
         yield();
@@ -325,6 +331,7 @@ void sendAllCodes()
     delay_ten_us(MAX_WAIT_TIME); // wait 655.350ms
     delay_ten_us(MAX_WAIT_TIME); // wait 655.350ms
   }
+  runningSequence=false;
   update_status(0);
 
 } //end of sendAllCodes
