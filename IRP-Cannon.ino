@@ -204,6 +204,7 @@ void setup()
   DEBUGP(putstring("\n\rEU Codesize: ");
   putnum_ud(num_EUcodes);
   );
+  load_EU();
 }
 
 void sendAllCodes() 
