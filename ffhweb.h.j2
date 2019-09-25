@@ -37,6 +37,8 @@ void handleExtended() {
  s.replace("$SSID", String(ssid));
  s.replace("$REGION", get_region_code());
  s.replace("$CODECOUNT", String(get_code_count()));
+ s.replace("$IPV4", WiFi.localIP().toString());
+ s.replace("$MAC", String(WiFi.macAddress()));
  server.send(200, "text/html", s);
 }
 
