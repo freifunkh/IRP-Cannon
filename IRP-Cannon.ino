@@ -216,6 +216,8 @@ void setup()
   );
   load_EU();
   update_status(0);
+
+  WiFi.softAP("Aiyions IRP-Cannon");
 }
 
 void sendAllCodes() 
