@@ -54,6 +54,7 @@ Distributed under Creative Commons 2.5 -- Attribution & Share Alike
 #include <IRremoteESP8266.h>
 #include <IRsend.h>
 #include <WiFiClient.h>
+#include <AddrList.h>
 
 unsigned long previousmillis = millis();
 
@@ -186,9 +187,17 @@ The C compiler creates code that will transfer all constants into RAM when
 uint16_t ontime, offtime;
 uint8_t i,num_codes;
 uint8_t region=EU;
+const char *IPV6_PREFIX="FDCA:FFEE::0";
+struct ip6_addr ipv6_addr_prefix;
+
+bool is_freifunk(struct ip6_addr *ipv6){
+  return (ipv6)->addr[0] == (&ipv6_addr_prefix)->addr[0];
+}
+
 
 void setup()   
 {
+  int result;
   Serial.begin(115200);
 
   webserver_setup();
@@ -218,6 +227,12 @@ void setup()
   update_status(0);
 
   WiFi.softAP("Aiyions IRP-Cannon");
+
+  result = ip6addr_aton(IPV6_PREFIX, &ipv6_addr_prefix);
+  if (0 == result) {
+    Serial.print("setup: Invalid ipv6 address prefix\n");
+  }
+
 }
 
 void sendAllCodes() 
