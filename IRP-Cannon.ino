@@ -190,6 +190,9 @@ uint8_t region=EU;
 const char *IPV6_PREFIX="FDCA:FFEE::0";
 struct ip6_addr ipv6_addr_prefix;
 
+struct ip6_addr freifunk_ipv6_addr;
+struct ip6_addr public_ipv6_addr;
+
 bool is_freifunk(struct ip6_addr *ipv6){
   return (ipv6)->addr[0] == (&ipv6_addr_prefix)->addr[0];
 }
@@ -378,6 +381,15 @@ void loop()
 
 int get_code_count(void) {
   return num_codes;
+}
+
+
+String get_freifunk_ipv6(void) {
+  return String(ip6addr_ntoa(&freifunk_ipv6_addr));
+}
+
+String get_public_ipv6(void) {
+  return String(ip6addr_ntoa(&public_ipv6_addr));
 }
 
 int get_region(void) {
