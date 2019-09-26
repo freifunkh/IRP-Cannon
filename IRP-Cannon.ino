@@ -197,6 +197,25 @@ bool is_freifunk(struct ip6_addr *ipv6){
   return (ipv6)->addr[0] == (&ipv6_addr_prefix)->addr[0];
 }
 
+void status(Print& out) {
+  int res;
+  struct ip6_addr temp_v6;
+
+  for (auto a : addrList) {
+    if(a.isV6() && !a.isLocal()){
+      res = ip6addr_aton(a.toString().c_str(), &temp_v6);
+      if (0 == res) {
+        Serial.print("status: Invalid ipv6 address\n");
+      }
+      if(is_freifunk(&temp_v6)){
+        ip6_addr_copy(freifunk_ipv6_addr, temp_v6);
+      }else{
+        ip6_addr_copy(public_ipv6_addr, temp_v6);
+      }
+    }
+  }
+}
+
 
 void setup()   
 {
@@ -235,6 +254,8 @@ void setup()
   if (0 == result) {
     Serial.print("setup: Invalid ipv6 address prefix\n");
   }
+
+  status(Serial);
 
 }
 
@@ -364,6 +385,7 @@ void loop()
   //have an uptime clock updated every five seconds
   if(millis()>previousmillis+5*1000){
     previousmillis = millis();
+    status(Serial);
   }
   //Super "ghetto" (but decent enough for this application) button debouncing:
   //-if the user pushes the Trigger button, then wait a while to let the button stop bouncing, then start transmission of all POWER codes
