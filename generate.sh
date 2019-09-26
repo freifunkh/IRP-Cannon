@@ -19,7 +19,7 @@ for filepath in $DIR/web/*.html.j2; do
 	cp $filepath $DIR/out/$sless
 	sed -i "s^{{FAVICON_DATA}}^$(cat $DIR/out/b64/favicon.ico.b64)^" $DIR/out/$sless
 	sed -i "s^{{FFH_LOGO}}^$(cat $DIR/out/b64/logo-ff.png.b64)^" $DIR/out/$sless
-	sed -i "s^{{POWER_SYMBOL}}^$(cat $DIR/out/b64/power.png.b64)^" $DIR/out/$sless
+	sed -i "s^{{POWER_SYMBOL}}^$(cat $DIR/out/b64/power.svg.b64)^" $DIR/out/$sless
 done
 
 
