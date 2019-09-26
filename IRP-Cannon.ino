@@ -56,6 +56,8 @@ Distributed under Creative Commons 2.5 -- Attribution & Share Alike
 #include <WiFiClient.h>
 #include <AddrList.h>
 
+const IPAddress apIp(192, 168, 0, 1);
+
 unsigned long previousmillis = millis();
 
 int current_status = -1;
@@ -222,6 +224,13 @@ void setup()
   int result;
   Serial.begin(115200);
 
+  WiFi.persistent(false);
+  WiFi.disconnect(true);
+
+  WiFi.mode(WIFI_AP);
+  WiFi.softAPConfig(apIp, apIp, IPAddress(255, 255, 255, 0));
+  WiFi.softAP("Aiyions IRP-Cannon", nullptr, 1);
+
   webserver_setup();
 
   irsend.begin();
@@ -247,8 +256,6 @@ void setup()
   );
   load_EU();
   update_status(0);
-
-  WiFi.softAP("Aiyions IRP-Cannon");
 
   result = ip6addr_aton(IPV6_PREFIX, &ipv6_addr_prefix);
   if (0 == result) {
