@@ -38,6 +38,8 @@ void handleExtended() {
  s.replace("$REGION", get_region_code());
  s.replace("$CODECOUNT", String(get_code_count()));
  s.replace("$IPV4", WiFi.localIP().toString());
+ s.replace("$PUBLIC_IPV6", get_public_ipv6());
+ s.replace("$IPV6", get_freifunk_ipv6());
  s.replace("$MAC", String(WiFi.macAddress()));
  server.send(200, "text/html", s);
 }
