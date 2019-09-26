@@ -3,6 +3,23 @@
 This is a fork based on 'esp8266-tvbgone'.
 Thanks to agrimpelhuber!
 
+## Compiling the webinterface
+
+Only edit the template files, never the 'ffhweb.h'.
+
+Afterwords regenerate it with
+
+```
+./generate.sh
+```
+
+while the arduino IDE is closed.
+
+
+
+
+# Deprecated info
+
 This is a rough and dirty TV-B-Gone port of the original Arduino version, re-written for expressif ESP8266-based boards (wemos D1 mini works great for me.) It is meant to be flashed to an ESP8266-based board, using the Arduino Development Platform. Instructions how to use it with ESP8266 boards is found elsewhere. The IRremoteESP8266 library can also be downloaded using the library manager.
 
 ## Warnings
