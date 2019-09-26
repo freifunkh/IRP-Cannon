@@ -8,6 +8,8 @@ By aiyion (freifunk@aiyionpri.me)
 
 
 int get_code_count(void);
+String get_freifunk_ipv6(void);
+String get_public_ipv6(void);
 int get_region(void);
 String get_region_code(void);
 int get_status(void);
