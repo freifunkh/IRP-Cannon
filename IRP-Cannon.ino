@@ -48,6 +48,7 @@ Distributed under Creative Commons 2.5 -- Attribution & Share Alike
 
 */
 
+#include <DNSServer.h>
 #include "ffhweb.h"
 #include "WORLD_IR_CODES.h"
 #include <ESP8266WiFi.h>
@@ -57,6 +58,7 @@ Distributed under Creative Commons 2.5 -- Attribution & Share Alike
 #include <AddrList.h>
 
 const IPAddress apIp(192, 168, 0, 1);
+DNSServer dnsServer;
 
 unsigned long previousmillis = millis();
 
@@ -231,6 +233,9 @@ void setup()
   WiFi.softAPConfig(apIp, apIp, IPAddress(255, 255, 255, 0));
   WiFi.softAP("Aiyions IRP-Cannon", nullptr, 1);
 
+  dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
+  dnsServer.start(53, "*", apIp);
+
   webserver_setup();
 
   irsend.begin();
@@ -386,6 +391,8 @@ void sendAllCodes()
 
 void loop() 
 {
+  // serve dns requests
+  dnsServer.processNextRequest();
   // serve the webrequests
   server.handleClient();
 
