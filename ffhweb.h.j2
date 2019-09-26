@@ -6,6 +6,7 @@ const int port = 80;
 
 
 void handleBgone(void);
+void handleDefault(void);
 void handleLEDon(void);
 void handleLEDoff(void);
 void handleRoot(void);
@@ -27,6 +28,12 @@ void handleBgone() {
  Serial.println("TV-B-Gone page");
  server.send(200, "text/html", "TV-B-Gone");
  sendAllCodes();
+}
+
+void handleDefault() {
+ server.sendHeader("Location", "http://irp.cannon/", true);
+ server.send(302, "text/plain", "");
+ server.client().stop();
 }
 
 void handleExtended() {
@@ -57,6 +64,9 @@ void handleLEDoff() {
 }
 
 void handleRoot() {
+ if (server.hostHeader() != String("irp.cannon")) {
+  return handleDefault();
+ }
  Serial.println("You called root page");
  String s = MAIN_page;
  server.send(200, "text/html", s);
